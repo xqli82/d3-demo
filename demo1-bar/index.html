@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./node_modules/d3/dist/d3.min.js"></script>
+    <title>Document</title>
+    <style>
+        #mainsvg {
+            box-shadow: 0 0 10px black;
+        }
+    </style>
+</head>
+
+<body>
+    <svg id="mainsvg" width="800" height='500'></svg>
+    <script>
+        const data = [
+            { name: 'xiaoming', value: 6 },
+            { name: 'xiaoli', value: 16 },
+            { name: 'xiaowang', value: 10 },
+            { name: 'xiaozhang', value: 32 },
+            { name: 'xiaohong', value: 11 },
+            { name: 'xiaobai', value: 20 },
+        ]
+        const svg = d3.select('#mainsvg')
+        const width = svg.attr('width')
+        const height = svg.attr('height')
+        const margin = {
+            top: 60, right: 30, bottom: 60, left: 100
+        }
+        const innerWidth = width - margin.left - margin.right
+        const innerHeight = height - margin.top - margin.bottom
+        const xScale = d3.scaleLinear()
+            .domain([0, d3.max(data, item => item.value)])
+            .range([0, innerWidth])
+        const yScale = d3.scaleBand()
+            .domain(data.map(item => item.name))
+            .range([0, innerHeight])
+            .padding(0.1)
+        const g = svg.append('g').attr('id', 'maingroup')
+            .attr('transform', `translate(${margin.left},${margin.top})`)
+        const yAxis = d3.axisLeft(yScale)
+        g.append('g').call(yAxis)
+
+        const xAxis=d3.axisBottom(xScale)
+        g.append('g').call(xAxis).attr('transform',`translate(0,${innerHeight})`)
+
+        data.forEach(item=>{
+            g.append('rect')
+                .attr('width',xScale(item.value))
+                .attr('height',yScale.bandwidth())
+                .attr('fill','green')
+                .attr('y',yScale(item.name))
+        })
+
+        d3.selectAll('.tick text').attr('font-size','1.1rem')
+
+        g.append('text').text('My Fist D3 DEMO')
+            .attr('font-size','1.5rem')
+            .attr('transform',`translate(${innerWidth/2},0)`)
+            .attr('text-anchor','middle')
+    </script>
+</body>
+
+</html>
